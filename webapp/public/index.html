@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>历史作者资料检索</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="container-fluid app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">LOCAL DATA WORKBENCH</p>
+        <h1>历史作者资料检索</h1>
+      </div>
+      <div class="header-meta"><span class="status-dot"></span><span id="connectionStatus">正在连接数据...</span></div>
+    </header>
+
+    <section class="filter-panel" aria-label="检索条件">
+      <div class="row g-3 align-items-end">
+        <div class="col-6 col-md-2">
+          <label for="dynastyFrom" class="form-label">朝代 ID 起</label>
+          <select id="dynastyFrom" class="form-select"><option value="">不限</option></select>
+        </div>
+        <div class="col-6 col-md-2">
+          <label for="dynastyTo" class="form-label">朝代 ID 止</label>
+          <select id="dynastyTo" class="form-select"><option value="">不限</option></select>
+        </div>
+        <div class="col-6 col-md-2">
+          <label for="domainCategory" class="form-label">领域一级</label>
+          <select id="domainCategory" class="form-select"><option value="">全部一级</option></select>
+        </div>
+        <div class="col-6 col-md-2">
+          <label for="domainLabel" class="form-label">领域二级标签</label>
+          <select id="domainLabel" class="form-select"><option value="">全部二级</option></select>
+        </div>
+        <div class="col-12 col-md-2">
+          <label for="authorSearch" class="form-label">作者</label>
+          <input id="authorSearch" class="form-control" type="search" placeholder="输入作者名检索" autocomplete="off">
+        </div>
+        <div class="col-12 col-md-1 d-flex gap-2">
+          <button id="resetFilters" class="btn btn-outline-secondary w-100" type="button" title="清空筛选">重置</button>
+        </div>
+      </div>
+      <div class="web-mode-panel">
+        <div class="form-check form-switch web-mode-toggle">
+          <input class="form-check-input" type="checkbox" role="switch" id="webMode">
+          <label class="form-check-label" for="webMode">Web 模式</label>
+        </div>
+        <div id="webModeSettings" class="web-mode-settings" hidden>
+          <div>
+            <label for="webHost" class="form-label">Host</label>
+            <input id="webHost" class="form-control form-control-sm" type="text" value="browse.library.kiwix.org" autocomplete="off" spellcheck="false">
+          </div>
+          <div>
+            <label for="webVersion" class="form-label">Version</label>
+            <input id="webVersion" class="form-control form-control-sm" type="text" value="wikisource_zh_all_nopic_2026-06" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </div>
+      <div class="global-sort" aria-label="全局排序">
+        <span class="global-sort-label">全局排序</span>
+        <select id="globalSort" class="form-select form-select-sm" aria-label="排序字段">
+          <option value="">不排序</option>
+          <option value="author">作者</option>
+          <option value="朝代id">朝代</option>
+          <option value="领域标签">领域标签</option>
+          <option value="影响力评分">评分</option>
+          <option value="身份与贡献">身份与贡献</option>
+          <option value="领域">领域原文</option>
+          <option value="简介">简介</option>
+        </select>
+        <select id="globalSortDirection" class="form-select form-select-sm" aria-label="排序方向">
+          <option value="asc">升序</option><option value="desc">降序</option>
+        </select>
+        <span id="sortSummary" class="result-summary"></span>
+      </div>
+      <div class="filter-footer">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="reviewOnly">
+          <label class="form-check-label" for="reviewOnly">仅显示待审核</label>
+        </div>
+        <span id="resultSummary" class="result-summary">载入中</span>
+      </div>
+    </section>
+
+    <section class="results-section" aria-label="作者记录">
+      <div class="table-responsive table-frame">
+        <table class="table align-middle data-table mb-0">
+          <thead>
+            <tr>
+              <th scope="col" data-sort="author">作者 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="朝代id">朝代 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="领域标签">领域标签 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="影响力评分">评分 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="身份与贡献">身份与贡献 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="领域">领域原文 <span class="sort-indicator"></span></th>
+              <th scope="col" data-sort="简介">简介 <span class="sort-indicator"></span></th>
+              <th scope="col" class="action-column">操作</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"><tr><td colspan="8" class="state-cell">正在载入记录...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state d-none">没有符合条件的记录</div>
+    </section>
+
+    <footer class="table-footer">
+      <nav aria-label="结果分页">
+        <ul id="pagination" class="pagination pagination-sm mb-0"></ul>
+      </nav>
+      <div class="page-controls">
+        <label for="pageJump">第</label>
+        <input id="pageJump" class="form-control form-control-sm page-jump" type="number" min="1" value="1" aria-label="跳转页码">
+        <span>页</span>
+        <label for="pageSize" class="ms-2">每页</label>
+        <select id="pageSize" class="form-select form-select-sm page-size" aria-label="每页条数">
+          <option>20</option><option selected>50</option><option>100</option>
+        </select>
+        <span>条</span>
+      </div>
+    </footer>
+  </main>
+
+  <div id="toast" class="app-toast" role="status" aria-live="polite"></div>
+  <script src="/url-utils.js" defer></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>

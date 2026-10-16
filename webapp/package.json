@@ -1,0 +1,18 @@
+{
+  "name": "historical-author-browser",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local searchable and editable browser for merged historical author records",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:mac": "./start.command",
+    "stop:mac": "./stop.command",
+    "check": "node --check server.js && node --check dataStore.js && node --check public/url-utils.js && node --check public/app.js && node --check test-data-store.js && node --check test-url-utils.js",
+    "test": "node test-data-store.js && node test-url-utils.js"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "express": "^5.1.0"
+  }
+}

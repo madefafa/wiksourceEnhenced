@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node.js dependencies and runtime artifacts
+webapp/node_modules/
+webapp/.runtime/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local/generated backups
+output/backups/
+*.bak
+*.tmp
+*.log
+
+# Generated batch/intermediate data; keep the canonical dataset explicitly tracked
+output/batch_*.json
+output/merged.json
+output/merged_encoded.json
+output/domain_review.csv
+output/manifest.json
+
+# Large/raw working inputs and derived metadata
+kiwix-author-*.txt
+kiwix-authors-metadata.checkpoint.jsonl
+kiwix-authors-metadata.csv
+kiwix-authors-person.json
+领域编码审核清单.csv
+
+# Local editor settings
+.vscode/
+.idea/
